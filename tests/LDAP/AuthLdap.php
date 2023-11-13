@@ -645,8 +645,11 @@ class AuthLDAP extends DbTestCase
         $this->integer($id)->isGreaterThan(0);
 
        //rootdn_passwd is set with a value (a password, not encrypted)
-        $dbPassword = getenv('DB_PASSWORD');
-        $password = $dbPassword;
+
+       //Invocación de la variable configurada
+        $config = include('tests\config\config.php');
+        $password = $config['ldap']['password'];
+
         $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => $password];
         $this->boolean($ldap->update($input))->isTrue();
         $this->boolean($ldap->getFromDB($id))->isTrue();

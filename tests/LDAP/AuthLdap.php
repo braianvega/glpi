@@ -647,7 +647,7 @@ class AuthLDAP extends DbTestCase
        //rootdn_passwd is set with a value (a password, not encrypted)
 
        //Invocación de la variable configurada
-        $config = include('tests\config\config.php');
+        $config = require_once 'more_code.php';'tests\config\config.php';
         $password = $config['ldap']['password'];
 
         $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => $password];

@@ -1504,6 +1504,7 @@ class Toolbox extends DbTestCase
         $user=$config['ldap']['username'];
         $pass=$config['ldap']['passworduser'];
         // Custom allowlist with multiple entries
+
         $custom_allowlist = [
             '|^https://\w+:[^/]+@calendar.mydomain.tld/|',
             '|//intra.mydomain.tld/|',
@@ -1514,7 +1515,7 @@ class Toolbox extends DbTestCase
             'allowlist' => $custom_allowlist,
         ];
         yield [
-            'url'       => 'https://$user:$pass@calendar.mydomain.tld/',
+            'url'       => sprintf('https://%s:%s@calendar.mydomain.tld/', $user, $pass),
             'expected'  => true, // validates first item of allowlist
             'allowlist' => $custom_allowlist,
         ];

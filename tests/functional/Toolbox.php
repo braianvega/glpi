@@ -1498,7 +1498,11 @@ class Toolbox extends DbTestCase
                 ];
             }
         }
-
+        
+        
+        $config = include 'tests\config\config.php';
+        $user=$config['ldap']['username'];
+        $pass=$config['ldap']['passworduser'];
         // Custom allowlist with multiple entries
         $custom_allowlist = [
             '|^https://\w+:[^/]+@calendar.mydomain.tld/|',
@@ -1510,7 +1514,7 @@ class Toolbox extends DbTestCase
             'allowlist' => $custom_allowlist,
         ];
         yield [
-            'url'       => 'https://user:pass@calendar.mydomain.tld/',
+            'url'       => 'https://$user:$pass@calendar.mydomain.tld/',
             'expected'  => true, // validates first item of allowlist
             'allowlist' => $custom_allowlist,
         ];

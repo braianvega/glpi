@@ -657,7 +657,6 @@ class AuthLDAP extends DbTestCase
        //Expected value to be encrypted using current  key
         $this->string((new GLPIKey())->decrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
 
-        $password = 'tot\'o';
         $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => $password];
         $this->boolean($ldap->update($input))->isTrue();
         $this->boolean($ldap->getFromDB($id))->isTrue();

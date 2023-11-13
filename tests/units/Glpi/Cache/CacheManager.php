@@ -397,13 +397,21 @@ class CacheManager extends \GLPITestCase
 
     protected function dsnProvider(): iterable
     {
+
+        //Se invocan las variables
+
+        $config = include 'tests\config\config.php';
+        $user=$config['ldap']['username'];
+        $pass=$config['ldap']['passworduser'];
+
         yield [
-            'dsn'      => 'memcached://user:pass@127.0.0.1:1015?weight=20',
+            'dsn'      => sprintf('memcached://%s:%s@127.0.0.1:1015?weight=20', $user, $pass),
             'is_valid' => true,
             'scheme'   => 'memcached',
         ];
         yield [
-            'dsn'      => ['memcached://user:pass@127.0.0.1:1015?weight=20', 'memcached://user:pass@127.0.0.1:1016?weight=30'],
+            'dsn'      => [sprintf('memcached://%s:%s@127.0.0.1:1015?weight=20', $user, $pass),
+                        sprintf('memcached://%s:%s@127.0.0.1:1016?weight=20', $user, $pass)],
             'is_valid' => true,
             'scheme'   => 'memcached',
         ];

@@ -291,14 +291,24 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             }
         }
 
-       // Prevent overriding of existing DB
-        $tables_result = $mysqli->query(
+        $tables_result = $mysqli->prepare(
             "SELECT COUNT(table_name)
-          FROM information_schema.tables
-          WHERE table_schema = '{$db_name}'
-             AND table_type = 'BASE TABLE'
-             AND table_name LIKE 'glpi\_%'"
+            FROM information_schema.tables
+            WHERE table_schema = ? 
+            AND table_type = 'BASE TABLE'
+            AND table_name LIKE 'glpi\_%'"
         );
+
+        $tables_result->bind_param('s', $db_name);
+
+        // Ejecuta la consulta
+        $tables_result  ->execute();
+
+        // Obtiene el resultado de la consulta
+        $tables_result->bind_result($count);    
+        $tables_result->fetch();
+
+
         if (!$tables_result) {
             throw new \Symfony\Component\Console\Exception\RuntimeException('Unable to check GLPI tables existence.');
         }

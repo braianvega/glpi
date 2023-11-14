@@ -41,6 +41,10 @@ chdir(__DIR__);
 
 include('../inc/includes.php');
 
+$config = include 'tests\config\config.php';
+$password = $config['ldap']['passwordconsole'];
+
+
 if (isset($_SERVER['argv'])) {
     for ($i = 1; $i < $_SERVER['argc']; $i++) {
         $it    = explode("=", $_SERVER['argv'][$i], 2);
@@ -52,7 +56,7 @@ if (isset($_SERVER['argv'])) {
 if (isset($_GET['help']) || !isset($_GET['user'])) {
     echo "\nusage " . PHP_BINARY .
         " {$_SERVER['argv'][0]} [ --password=<newpassword> ] [ --active ] [ --db ] --user=<login>\n\n";
-    echo "\t--password=secret  change password\n";
+    echo sprintf('\t--password=%s  change password\n',$password);
     echo "\t--enable           set active state\n";
     echo "\t--disable          unset active state\n";
     echo "\t--db               switch to password authent, for LDAP/IMAP users\n";

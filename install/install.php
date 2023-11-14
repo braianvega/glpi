@@ -352,26 +352,36 @@ function step4($databasename, $newdatabasename)
                 echo "<p>" . __('Impossible to write the database setup file') . "</p>";
                 $prev_form($host, $user, $password);
             }
-        } else { // try to create the DB
-            if ($link->query("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
-                echo "<p>" . __('Database created') . "</p>";
+        } else { 
+            
+            if ($link){    
 
-                $select_db = $link->select_db($newdatabasename);
-                $success = false;
-                if ($select_db) {
-                    $success = DBConnection::createMainConfig(
-                        $host,
-                        $user,
-                        $password,
-                        $newdatabasename,
-                        $timezones_requirement->isValidated(),
-                        false,
-                        true,
-                        false,
-                        false,
-                        false
-                    );
+                $query = $link->prepare("CREATE DATABASE IF NOT EXISTS ?");
+                $query->bind_param("s", $newdatabasename);
+
+                if ($query->execute()) {
+                    echo "<p>" . __('Database created') . "</p>";
+                    $select_db = $link->select_db($newdatabasename);
+                    $success = false;
+                    if ($select_db) {
+                        $success = DBConnection::createMainConfig(
+                            $host,
+                            $user,
+                            $password,
+                            $newdatabasename,
+                            $timezones_requirement->isValidated(),
+                            false,
+                            true,
+                            false,
+                            false,
+                            false
+                        );
+                    }
+                } else {
+                    echo "<p>" . __('Error creating database') . "</p>";
                 }
+
+                
 
                 if ($success) {
                     Toolbox::createSchema($_SESSION["glpilanguage"]);

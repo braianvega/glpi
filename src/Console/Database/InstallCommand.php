@@ -271,17 +271,24 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             '<comment>' . __('Creating the database...') . '</comment>',
             OutputInterface::VERBOSITY_VERBOSE
         );
-        if (
-            !$mysqli->query('CREATE DATABASE IF NOT EXISTS `' . $db_name . '`')
-            || !$mysqli->select_db($db_name)
-        ) {
-            $message = sprintf(
-                __('Database creation failed with message "(%s) %s".'),
-                $mysqli->errno,
-                $mysqli->error
-            );
-            $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
-            return self::ERROR_DB_CREATION_FAILED;
+
+        //Verificar conexión a base de datos
+        if($mysqli){
+            //Contenido en caso de que sea valida la conexión 
+
+            $query = $mysqli->prepare('CREATE DATABASE IF NOT EXISTS ?');
+            $query->bind_param('s', $db_name);
+
+            //Incluir validación
+            if(!$query->execute() || !$mysqli->select_db($db_name)){
+                $message = sprintf(
+                    __('Database creation failed with message "(%s) %s".'),
+                    $mysqli->errno,
+                    $mysqli->error
+                );
+                $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+                return self::ERROR_DB_CREATION_FAILED;
+            }
         }
 
        // Prevent overriding of existing DB
